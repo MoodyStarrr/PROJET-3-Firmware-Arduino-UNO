@@ -11,7 +11,7 @@ HEX = $(NOM).hex
 .PHONY: all flash clean
 
 flash: $(HEX)
-	avrdude -p atmega328p -P /dev/ttyACM0 -b 115200 -U flash:w:$(NOM).$^
+	avrdude -c arduino -p atmega328p -P /dev/ttyACM0 -b 115200 -U flash:w:$^
 
 $(HEX): $(ELF)
 	avr-objcopy -O ihex $^ $@
@@ -28,7 +28,7 @@ build/%.o: src/%.c
 	$(COMPILATEUR) $(OPTIONS) -c $^ -o $@
 
 clean:
-	@$(RM) -r $(NOM).hex $(NOM).elf build
+	@$(RM) -r $(HEX) $(ELF) build
 	clear
 
 
