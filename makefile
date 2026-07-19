@@ -5,18 +5,21 @@ LIBRAIRIES =
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:src/%.c=build/%.o)
 NOM = projet_3
-
+ELF = $(NOM).elf
+HEX = $(NOM).hex
 
 .PHONY: all flash clean
 
-flash: hex
+flash: $(HEX)
 	avrdude -p atmega328p -P /dev/ttyACM0 -b 115200 -U flash:w:$(NOM).$^
 
-hex: elf
-	avr-objcopy -O ihex $(NOM).$^ $(NOM).$@
+$(HEX): $(ELF)
+	avr-objcopy -O ihex $^ $@
 
-elf: $(OBJ)
-	$(COMPILATEUR) $(OPTIONS) $^ -o $(NOM).$@ $(LIBRAIRIES)
+all: $(ELF)
+
+$(ELF): $(OBJ)
+	$(COMPILATEUR) $(OPTIONS) $^ -o $@ $(LIBRAIRIES)
 	@# $^ pour appeler ce qui est appelé avant le lancement de la commande, ici $(OBj) soit tous les .o présents dans /build
 	@# $@ pour appeler celui qui execute la commande, ici elf
 
