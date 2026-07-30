@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <util/delay.h>
 //#include <>
 
@@ -6,7 +7,7 @@
 #define OFF 0
 
 void set_DDRB(int bit){
-	DDRB |= ( 1 << bit );
+	DDRB |= ( 1 << bit ); // DDRB = Data Direction Register pour le port B. Permet de configurer chaque pin du port B en entrée 0 ou sortie 1
 }
 /* Explications : Avec OU | on compare les bits de DDRB avec les bits de (1 << bit). 
  * L'opérateur OU | dit que si au moins un des 2 bits est à 1 alors le resultat est 1.
@@ -22,7 +23,7 @@ void set_DDRB(int bit){
 
 void config_PORTB(int state, int bit){
 	if( state  == 0 ){
-		PORTB &= ~(1 << bit);
+		PORTB &= ~(1 << bit); // PORTB permet d'écrire une valeur logique (haut/bas) sur chaque broche du port B configurée en sortie
 	}else if( state  == 1 ){
 		PORTB |= (1 << bit);
 	}
@@ -39,12 +40,17 @@ void config_PORTB(int state, int bit){
  *
  * */
 
+ISR(TIMER1_COMPA_vect){
+	PORTB ^= (1 << PORTB5);
+}
+
 int main(void){
+	OCR1A 	= 15624; // Valeur qui va etre comparé au compteur du matériel, qui augmente à chaque cycle (TCNT1) pour remettre le compteur (TCNT1) à 0, ie tout les OCR1A incréments de TCNT1 il revient à 0. Permet de créer une "période". Valeur obtenue en faisant OCR1A = ((Freq_CPU)/(prescaler * Freq_Voulue)) - 1 avec prescaler = 1024
+	TCCR1B	|=  (1 << CS10) | (1 << CS12) | (1 << WGM12);// Configuration du prescaler (diviseur de fréquence pour l'horloge)
+	TIMSK1 	|= (1 << OCIE1A);// Active ou désactive l'interruption périodique
+	sei();
 	set_DDRB(5);
+
 	while(1){
-		config_PORTB(ON,5);
-		_delay_ms(1000);
-		config_PORTB(OFF,5);
-		_delay_ms(1000);
 	}
 }

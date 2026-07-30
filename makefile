@@ -1,6 +1,6 @@
 COMPILATEUR = avr-gcc
 CIBLE = atmega328p
-OPTIONS = -Wall -Wextra -g -O0 -Iinclude -std=c99 -mmcu=$(CIBLE) -DF_CPU=16000000UL
+OPTIONS = -Wall -Wextra -g -Os -Iinclude -std=c99 -mmcu=$(CIBLE) -DF_CPU=16000000UL
 LIBRAIRIES = 
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:src/%.c=build/%.o)
