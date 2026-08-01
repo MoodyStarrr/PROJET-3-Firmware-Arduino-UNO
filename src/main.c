@@ -1,6 +1,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <uart.h>
+#include <string.h>
 //#include <>
 
 #define ON 1
@@ -50,6 +52,22 @@ int main(void){
 	TIMSK1 	|= (1 << OCIE1A);// Active ou désactive l'interruption périodique
 	sei();
 	set_DDRB(5);
+
+	uart_init(9600);
+
+	char str[] = "Hello World\n";
+
+	for(int i = 0; i < strlen(str) - 1; i++){
+		uart_putchar(str[i]);
+	}
+	
+	char received[4];
+	received[0] = uart_getchar();
+	received[1] = uart_getchar();
+	received[2] = uart_getchar();
+	received[3] = uart_getchar();
+
+	printf("%s\n",received);
 
 	while(1){
 	}
