@@ -55,7 +55,8 @@ int main(void){
 
 	uart_init(9600);
 
-	char str[] = "Hello World\n";
+	//char str[] = "Hello World\n";
+	char str[] = "UUUUUUUUUUU";
 
 	for(int i = 0; i < strlen(str) - 1; i++){
 		uart_putchar(str[i]);
@@ -67,7 +68,9 @@ int main(void){
 	received[2] = uart_getchar();
 	received[3] = uart_getchar();
 
-	printf("%s\n",received);
+	for(int i = 0; i < strlen(received) - 1; i++){
+		uart_putchar(received[i]);
+	}
 
 	while(1){
 	}

@@ -10,10 +10,10 @@ void uart_init(int baudrate){
 }
 
 char uart_getchar(void){
-	while( UCSR0A & (1 << UDRE0) == 0){}; // Attente du passage de UDRE0 à 1 pour lire
+	while( (UCSR0A & (1 << RXC0)) == 0){};
 	return UDR0;
 }
 void uart_putchar(char character){
-	while( UCSR0A & (1 << RXC0) == 0){};
+	while( (UCSR0A & (1 << UDRE0)) == 0){}; // Attente du passage de UDRE0 à 1 pour lire
 	UDR0 = character;
 };
