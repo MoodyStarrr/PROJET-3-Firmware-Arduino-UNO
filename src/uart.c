@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <avr/io.h>
 
-void uart_init(int baudrate){
+void uart_init(unsigned long int baudrate){
 	/*
 	int UBRR0mine = ( (F_CPU)/(16*baudrate) ) - 1;
 	UBRR0L = UBRR0mine; // Les 8 premiers bits sont mis directement dans la vari de type uint8_t

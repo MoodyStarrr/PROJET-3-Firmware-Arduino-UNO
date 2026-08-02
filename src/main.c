@@ -54,10 +54,7 @@ int main(void){
 	set_DDRB(5);
 
 	uart_init(9600);
-//	uart_putchar('U');
-/*
-	//char str[] = "Hello World\n";
-	char str[] = "UU";
+	char str[] = "Hello World\n";
 
 	for(int i = 0; i < strlen(str) - 1; i++){
 		uart_putchar(str[i]);
@@ -72,9 +69,6 @@ int main(void){
 	for(int i = 0; i < strlen(received) - 1; i++){
 		uart_putchar(received[i]);
 	}
-*/
 	while(1){
-		uart_putchar('U');
-		_delay_ms(1000);
 	}
 }
