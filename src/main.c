@@ -42,31 +42,45 @@ void config_PORTB(int state, int bit){
  *
  * */
 
+volatile ring_buffer buffer;
+
 ISR(TIMER1_COMPA_vect){
 	PORTB ^= (1 << PORTB5);
+}
+
+ISR(USART_RX_vect){
+  ring_buffer_put(&buffer, UDR0);
 }
 
 int main(void){
 	OCR1A 	= 15624; // Valeur qui va etre comparé au compteur du matériel, qui augmente à chaque cycle (TCNT1) pour remettre le compteur (TCNT1) à 0, ie tout les OCR1A incréments de TCNT1 il revient à 0. Permet de créer une "période". Valeur obtenue en faisant OCR1A = ((Freq_CPU)/(prescaler * Freq_Voulue)) - 1 avec prescaler = 1024
 	TCCR1B	|=  (1 << CS10) | (1 << CS12) | (1 << WGM12);// Configuration du prescaler (diviseur de fréquence pour l'horloge)
 	TIMSK1 	|= (1 << OCIE1A);// Active ou désactive l'interruption périodique
-	sei();
-	set_DDRB(5);
+  
+  buffer.count = buffer.head = buffer.tail = 0;
+	char str[] = "Hello World\n";
+  char received[strlen(str)];
 
 	uart_init(9600);
-	char str[] = "Hello World\n";
+
+	sei();
+	set_DDRB(5);
 
 	for(int i = 0; i < strlen(str) - 1; i++){
 		uart_putchar(str[i]);
 	}
-	
+  /* TP3	
 	char received[4];
 	received[0] = uart_getchar();
 	received[1] = uart_getchar();
 	received[2] = uart_getchar();
 	received[3] = uart_getchar();
+  */
+  for(int i = 0; i < strlen(str) - 1;i++){
+    received[i] = ring_buffer_get(&buffer);
+  }
 
-	for(int i = 0; i < strlen(received) - 1; i++){
+	for(int i = 0; i < strlen(str) - 1; i++){
 		uart_putchar(received[i]);
 	}
 	while(1){
